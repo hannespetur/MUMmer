@@ -3,6 +3,23 @@
 
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{animate}
+\usepackage{calc}
+\usepackage{fp}
+\usepackage{times}
+
+\newcommand\layera{%
+\path (0,0) node[circle,minimum size=15pt,draw] (00) {0};
+}
+
+\newcommand\layerb{%
+\path (-1,-1) node[circle,minimum size=15pt,draw] (111){};
+\draw[->] (00) -- (111);
+}
+
 
 \title[MUMmer]{Alignment of whole genomes using MUMmer}
 
@@ -98,15 +115,91 @@ A suffix tree is a compact representation that stores all possible suffixes of a
 \end{frame}
 
 \begin{frame}{Step 1: Creating a suffix tree}
-(Animation sem býr til suffix tree)
+
+\only<1>{\begin{tikzpicture}[scale=1.8]<1>
+\draw (-2,0) node[above] {\textbf{ABBA\$ABABB}};
+\path (0,0) node[circle,minimum size=15pt,draw] (00) {0};
+
+\path (-2,-1) node[circle,minimum size=15pt,draw] (121){1};
+\draw[->] (00) -- node[above left]{\footnotesize A} (121);
+\path (-3,-2) node[rectangle,minimum size=15pt,draw] (122){1};
+\draw[->] (121) -- node[left]{\footnotesize BBA\$ABABB} (122);
+\end{tikzpicture}}
+
+\only<2>{\begin{tikzpicture}[scale=1.8]<1>
+\draw (-2,0) node[above] {A\textbf{BBA\$ABABB}};
+\path (0,0) node[circle,minimum size=15pt,draw] (00) {0};
+
+\path (-2,-1) node[circle,minimum size=15pt,draw] (121){1};
+\draw[->] (00) -- node[above left]{\footnotesize A} (121);
+\path (-3,-2) node[rectangle,minimum size=15pt,draw] (122){1};
+\draw[->] (121) -- node[left]{\footnotesize BBA\$ABABB} (122);
+
+\path (2,-1) node[circle,minimum size=15pt,draw] (01){1};
+\draw[->] (00) -- node[left]{\footnotesize B} (01);
+\path (1,-2) node[rectangle,minimum size=15pt,draw] (112){2};
+\draw[->] (01) -- node[left]{\footnotesize BA\$ABABB} (112);
+\end{tikzpicture}}
+
+\only<3>{\begin{tikzpicture}[scale=1.8]<1>
+\draw (-2,0) node[above] {ABBA\$ABABB};
+\path (0,0) node[circle,minimum size=15pt,draw] (00) {0};
+% \newframe
+\path (-2,-1) node[circle,minimum size=15pt,draw] (121){1};
+\draw[->] (00) -- node[above left]{\footnotesize A} (121);
+\path (-3,-2) node[rectangle,minimum size=15pt,draw] (122){1};
+\draw[->] (121) -- node[left]{\footnotesize BBA\$ABABB} (122);
+% \newframe
+\path (2,-1) node[circle,minimum size=15pt,draw] (01){1};
+\draw[->] (00) -- node[left]{\footnotesize B} (01);
+\path (1,-2) node[rectangle,minimum size=15pt,draw] (112){2};
+\draw[->] (01) -- node[left]{\footnotesize BA\$ABABB} (112);
+% \nf
+\path (3,-2) node[rectangle,minimum size=15pt,draw] (12){3};
+\draw[->] (01) -- node[left]{\footnotesize A\$ABABB} (12);
+% \nf
+\path (-1,-2) node[rectangle,minimum size=15pt,draw] (012){4};
+\draw[->] (121) -- node[left]{\footnotesize \$ABABB} (012);
+% \nf
+
+
+\end{tikzpicture}}
+
+\vspace*{2cm}
+\textsc{ }
 \end{frame}
 
 \begin{frame}{Step 2: MUM decomposition}
+Let us first define what a MUM is
+\begin{definition}
+A subsequence is a MUM (Maximal Unique Matches) if and only if:
+\begin{itemize}
+\item The subsequence has a exact match on both genomes
+\item It is not a subsequence of another matched sequence
+\begin{itemize}
+\item This means the sequence is surrounded be mismatches
+\end{itemize}
+\item It is unique
+\begin{itemize}
+\item It appears exactly once in both genomes
+\end{itemize}
+\end{itemize}
+\end{definition}
+\begin{example}
+\texttt{tcgatcGACGATCGCGGCCGTAGATCGAATAACGAGAGAGCATAAcgactta}
+\texttt{gcattaGACGATCGCGGCCGTAGATCGAATAACGAGAGAGCATAAtccagag}
+\end{example}
 
 \end{frame}
 
 \begin{frame}{Step 3: Sorting the matches found in the MUM alignment}
+Once we have found the MUMs, we might end up with something like this:
 
+{
+	\includegraphics[width=0.75\textwidth]{img/sort1.png}
+}
+
+Problem! We cannot align the two genomes using the MUMs because they aren't in correct order.
 \end{frame}
 
 \begin{frame}{Step 4: Closing the gaps}
