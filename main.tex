@@ -1,0 +1,125 @@
+\documentclass{beamer}
+\usetheme{Boadilla}
+
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+
+\title[MUMmer]{Alignment of whole genomes using MUMmer}
+
+\subtitle{Presentation in Algorithms in Bioinformatics (TÖ111F autumn 2014)}
+
+\author{Hannes Pétur Eggertsson}
+
+\date{November 18, 2014}
+
+%\setbeamertemplate{frametitle}[default][center]
+
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}{Motivation}
+%Let's go back to 1999... (some things that will remind you of that wonderful time)
+%
+%{
+%	\includegraphics[width=0.3\textwidth]{img/Win98.png}<2-4>
+%	\includegraphics[width=0.35\textwidth]{img/blue.png}<3-4>
+%	\includegraphics[width=0.34\textwidth]{img/y2k.jpg}<4>
+%}
+%\end{frame}
+
+\begin{frame}{Motivation}
+In 1999...
+\begin{itemize}
+\item the number of sequenced genomes was increasing rapidly
+\item when a new genome is sequenced, one could ask himself:
+\begin{itemize}
+\item How does this genome align to the other genomes?
+\end{itemize}
+\end{itemize}
+
+Problem: 
+\begin{itemize}
+\item We have algorithms that were used for single gene sequences (up to 10,000 bp)
+\item But, they won't work well with whole genomes (millions of base pairs or more)
+\begin{itemize}
+\item Take up way too much memory or
+\item Have unacceptable computational time
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Introduction}
+%	{ 
+%		\includegraphics[width=0.6\textwidth]{img/turmite.png}
+%	}
+MUMmer:
+\begin{itemize}
+\item Is a system used to align whole genome sequences.
+\item Uses suffix trees as a data structure.
+\item Assumes that the two genomes are similar/related.
+\item The algorithm can be split into several steps that I'll talk about in detail
+\end{itemize}
+\end{frame}
+
+%\begin{frame}{MUMmer}
+%Five steps:
+%\begin{enumerate}
+%\item Creates a suffix tree
+%\item Perform a maxumal unique match (MUM) decomposition of two genomes
+%\item Sorts the matches found in the MUM alignment
+%\item ....
+%\end{enumerate}
+%\end{frame}
+
+\begin{frame}{Step 1: Creating a suffix tree}
+A suffix tree is a compact representation that stores all possible suffixes of an input sequence.
+\begin{itemize}
+\item Square nodes are leaves.
+\begin{itemize}
+\item Store information about the starting position of the suffix.
+\end{itemize} 
+\item Circular nodes are internal nodes.
+\begin{itemize}
+\item That means two or more sequences share the same prefix.
+\item Store information about the length of the shared prefix.
+\end{itemize}
+\end{itemize}
+\begin{center}
+	{
+		\includegraphics[width=0.65\textwidth]{img/suffixTree.png}
+	}
+\end{center}
+\end{frame}
+
+\begin{frame}{Step 1: Creating a suffix tree}
+(Animation sem býr til suffix tree)
+\end{frame}
+
+\begin{frame}{Step 2: MUM decomposition}
+
+\end{frame}
+
+\begin{frame}{Step 3: Sorting the matches found in the MUM alignment}
+
+\end{frame}
+
+\begin{frame}{Step 4: Closing the gaps}
+
+\end{frame}
+
+\begin{frame}{MUMmer 3}
+
+\end{frame}
+
+
+\begin{frame}{Conclusion}
+
+\end{frame}
+
+\end{document}
