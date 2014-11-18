@@ -42,9 +42,9 @@ First off. Let's travel back in time to 1999... (here are some things that will 
 \end{frame}
 
 \begin{frame}{Motivation}
-Meanwhile at that particular time in bioinformatics...
+Meanwhile in bioinformatics...
 \begin{itemize}
-\item The number of sequenced genomes was very low but increasing very fast.
+\item The number of completely sequenced genomes were low but increasing very fast.
 \item Whenever a new genome is sequenced, one could ask himself:
 \begin{itemize}
 \item How does this genome align to the other genomes we have sequenced?
@@ -88,7 +88,7 @@ MUMmer:
 \item Was published in 1999.
 \item Is a system used to align whole genome sequences.
 %\item Uses suffix trees as a data structure.
-\item Idea: Find large chunks of exact matches on both genomes in linear time.
+\item Idea: Find large chunks of exact matches on both genomes in linear time and assume they're part of the global alignment.
 %\begin{itemize}
 %\item So it will only work well for two genomes that are similar/related.
 %\end{itemize}
@@ -112,7 +112,7 @@ A suffix tree stores all possible suffixes in a tree.
 \end{itemize}
 \begin{center}
 	{
-		\includegraphics[width=0.65\textwidth]{img/suffixTree.png}
+		\includegraphics[width=0.75\textwidth]{img/suffixTree.png}
 	}
 \end{center}
 Creating a suffix tree takes $O(n)$ time and space.
@@ -480,13 +480,13 @@ Combined string: \texttt{ABBA\$ABABB}
 \end{frame}
 
 \begin{frame}{Finding MUMs from suffix tree}
-Let's recall what condition MUMs had to have:
+Let's recall which conditions MUMs must satisfy:
 \begin{enumerate}
 \item Exact matches on both genomes.
 \item Surrounded by mismatches.
 \item Unique.
 \end{enumerate}
-We can satisfy conditions 1 and 3 by searching the tree for a internal node with:
+We satisfy conditions 1 and 3 by finding a internal node with:
 \begin{itemize}
 \item Exactly two leafs.
 \item Both leaves' starting positions are on each side of the dollar sign.
