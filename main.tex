@@ -13,7 +13,7 @@
 
 \title[MUMmer]{Alignment of whole genomes using MUMmer}
 
-\subtitle{Presentation in Algorithms in Bioinformatics (TÖ111F autumn 2014)}
+\subtitle{Presentation in Algorithms in Bioinformatics (TÖ111F)}
 
 \author{Hannes Pétur Eggertsson}
 
@@ -32,6 +32,7 @@
 
 \begin{frame}{Motivation}
 First off. Let's travel back in time to 1999... (here are some things that will remind you of that wonderful time)
+\only<1>{\vspace*{4cm}}
 
 {
 	\includegraphics[width=0.3\textwidth]{img/Win98.png}<2-4>
@@ -41,36 +42,36 @@ First off. Let's travel back in time to 1999... (here are some things that will 
 \end{frame}
 
 \begin{frame}{Motivation}
-But at that very same time in bioinformatics...
+Meanwhile at that particular time in bioinformatics...
 \begin{itemize}
-\item The number of sequenced genomes was very limited but increasing very fast.
+\item The number of sequenced genomes was very low but increasing very fast.
 \item Whenever a new genome is sequenced, one could ask himself:
 \begin{itemize}
 \item How does this genome align to the other genomes we have sequenced?
 \end{itemize}
 \end{itemize}
 
-\only<2>Problem: 
+\only<2>{Problem:} 
 \begin{itemize}
 \item<2> We had algorithms that were made for single gene sequences.
-\item<2> But, they won't work well with whole genomes.
+\item<2> They didn't work well with whole genomes.
 \item<2> It's simple: Size matters.
 \begin{itemize}
-\item<2> Take up way too much memory or
-\item<2> Have unacceptable computational time
+\item<2> Require way too much memory or
+\item<2> take extremely long time to compute.
 \end{itemize}
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Problem description}
 \begin{itemize}
-\item[In] Two genomes, A and B. Both could be very large (possibly over 1 Mbp)
+\item[In] Two genomes, A and B. Both could be very large (millions of nucleotides)
 
 {
 	\includegraphics[width=0.85\textwidth]{img/genomeBefore.png}
 }
 
-\item[Out] Align the two genomes using insertions and deletions (or for short, indels) to maximize the matches.
+\item[Out] Align the two genomes to maximize the number of matches using insertions and deletions.
 
 {
 	\includegraphics[width=0.85\textwidth]{img/genomeAfter.png}
@@ -86,8 +87,8 @@ MUMmer:
 \begin{itemize}
 \item Was published in 1999.
 \item Is a system used to align whole genome sequences.
-\item Uses suffix trees as a data structure.
-\item Idea: Finding large chunks of exact matches on both genomes in linear time.
+%\item Uses suffix trees as a data structure.
+\item Idea: Find large chunks of exact matches on both genomes in linear time.
 %\begin{itemize}
 %\item So it will only work well for two genomes that are similar/related.
 %\end{itemize}
@@ -118,16 +119,16 @@ Creating a suffix tree takes $O(n)$ time and space.
 \end{frame}
 
 \begin{frame}{Step 2: MUM decomposition}
-Let us first define what a MUM is
+MUM is a abbreviation for Maximal Unique Matches.
 \begin{definition}
-A subsequence is a MUM (Maximal Unique Matches) if and only if:
+A sequence is a MUM if and only if:
 \begin{itemize}
-\item The subsequence has an exact match on both genomes
-\item It is not a subsequence of another matched sequence
+\item The sequence has an exact match on both genomes
+\item and it is not a subsequence of another matched sequence
 %\begin{itemize}
 %\item This means the sequence is surrounded be mismatches
 %\end{itemize}
-\item It is unique
+\item and it is unique
 %\begin{itemize}
 %\item It appears exactly once in both genomes
 %\end{itemize}
@@ -141,7 +142,7 @@ A subsequence is a MUM (Maximal Unique Matches) if and only if:
 \end{frame}
 
 \begin{frame}{Step 3: Sorting the matches found in the MUM alignment}
-Once we have found the MUMs, we enumerate them like this:
+We enumerate the found MUMs like this:
 
 \vspace{0.2cm}{
 	\includegraphics[width=0.75\textwidth]{img/sort1.png}
@@ -197,7 +198,7 @@ Everything in between the MUMs is called \textbf{gaps}.
 %\end{frame}
 
 \begin{frame}{Diving deeper}
-How do we go from use suffix trees to find MUMs?
+How do we go from suffix trees to finding MUMs?
 
 \begin{example}
 \begin{itemize}
@@ -485,10 +486,10 @@ Let's recall what condition MUMs had to have:
 \item Surrounded by mismatches.
 \item Unique.
 \end{enumerate}
-We can achieve conditions 1 and 3 by searching the tree for a internal node with:
+We can satisfy conditions 1 and 3 by searching the tree for a internal node with:
 \begin{itemize}
 \item Exactly two leafs.
-\item Both leaves start on each side of the dollar sign.
+\item Both leaves' starting positions are on each side of the dollar sign.
 \end{itemize}
 
 \vspace*{0.1cm}
@@ -597,24 +598,23 @@ We'll need to check for condition 2 afterwards.
 \begin{frame}{Potential MUMs to MUMs}
 We have the following potential MUMs:
 \begin{itemize}
-\item \texttt{ABB} at starting positions 0 and 7.
-\item \texttt{BA} at starting positions 2 and 6.
-\item \texttt{BB} at starting positions 1 and 8.
+\item \texttt{ABB}.
+\item \texttt{BA}.
+\item \texttt{BB}.
 \end{itemize}
-Our string: \texttt{ABBA\$ABABB}. Let's check if condition 2 is satisfied
+\only<2>{Our string: \texttt{ABBA\$ABABB}. Let's check if condition 2 is satisfied
 \begin{itemize}
-\item \texttt{ABB} achieves condition 2 (it's surrounded by mismatches).
-\item \texttt{BA} achieves condition 2 as well.
-\item \texttt{BB} does NOT achieve condition 2. In both cases it is preceded by a \texttt{A}.
+\item \texttt{ABB} satisfies condition 2.
+\item \texttt{BA} satisfies condition 2.
+\item \texttt{BB} does NOT satisfy condition 2.
 \end{itemize}
-Resulting MUMs: \texttt{\textbf{ABB}} and \texttt{\textbf{BA}}.
+Resulting MUMs: \texttt{\textbf{ABB}} and \texttt{\textbf{BA}}.}
 \end{frame}
 
 
 \begin{frame}{Results and conclusion}
-MUMmer was put to the test on various genomes:
 \begin{itemize}
-\item<1-> Two strains of tuberculosis (bacteria) that are >99\% identical
+\item<1-> Two strains of tuberculosis that are >99\% identical
 \begin{itemize}
 \item<1-> 5 seconds to create the suffix tree.
 \item<1-> 45 seconds to sort the MUMs.
@@ -627,19 +627,19 @@ MUMmer was put to the test on various genomes:
 \item<2-> 116 seconds to generate alignments of the gaps.
 \end{itemize}
 \end{itemize}
-\only<3>{So in conclusion:}
+\onslide<3->{So in conclusion:}
 \begin{itemize}
-\item<3-> If the two genomes are very similar, MUMs sequences will...:
+\item<3-> If the two genomes are very similar, MUM sequences will...
 \begin{itemize}
 \item<3-> ...be long and cover most of the genome.
-\item<3-> ...rarely be a random match. Therefore few or no errors.
-\item<3-> ...make the algorithm run fast (almost linear time)
+\item<3-> ...rarely be a random match.
+\item<3-> ...make the algorithm run fast.
 \end{itemize}
-\item<3-> If the genomes are very different, MUMs sequences will...:
+\item<4-> If the genomes are very different, MUM sequences will...
 \begin{itemize}
-\item<3-> ...be short and cover a small part of the genome.
-\item<3-> ...often be a random match. Therefore many errors.
-\item<3-> ...make the algorithm run slow.
+\item<4-> ...be short and cover a small part of the genome.
+\item<4-> ...often be a random match.
+\item<4-> ...make the algorithm run slow.
 \end{itemize}
 \end{itemize}
 %\item<3-> Subsequence of a human chromosome 12p13 and mouse chromosome 6 (both rougly 230,000 nucleotides)
@@ -655,7 +655,7 @@ MUMmer was put to the test on various genomes:
 \begin{itemize}
 \item MUMmer 3 is the latest version of MUMmer
 \item It was released in 2004 and is open-source.
-\item Requires less than half the memory and more than twice as fast than the initial MUMmer.
+\item Requires less memory and is a lot faster than the initial MUMmer.
 \item Most notable features added since the initial MUMmer:
 \begin{itemize}
 \item You can allow tolarence for mismatches when finding MUMs.
@@ -672,6 +672,12 @@ MUMmer was put to the test on various genomes:
 
 \begin{frame}{Thank you!}
 Feel free to ask any questions.
+
+\vspace*{2cm}
+
+Original papers: \url{http://mummer.sourceforge.net/MUMmer.pdf} by Arthur L. Delcher, Simon Kasif, Robert D. Fleischmann, Jeremy Peterson, Owen White and Steven L. Salzberg.\\\vspace*{0.2cm}
+and\\\vspace*{0.2cm}
+\url{http://mummer.sourceforge.net/MUMmer3.pdf} by Stefan Kurtz, Adam Phillippy, Arthur L. Delcher, Michael Smoot, Martin Shumway, Corina Antonescu and Steven L. Salzberg.
 
 \end{frame}
 
