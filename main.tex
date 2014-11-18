@@ -31,7 +31,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Motivation}
-Let's go back to 1999... (some things that will remind you of that wonderful time)
+First off. Let's travel back in time to 1999... (here are some things that will remind you of that wonderful time)
 
 {
 	\includegraphics[width=0.3\textwidth]{img/Win98.png}<2-4>
@@ -41,23 +41,23 @@ Let's go back to 1999... (some things that will remind you of that wonderful tim
 \end{frame}
 
 \begin{frame}{Motivation}
-In 1999...
+But at that very same time in bioinformatics...
 \begin{itemize}
-\item The number of sequenced genomes was very low but increasing rapidly
-\item When a new genome is sequenced, one could ask himself:
+\item The number of sequenced genomes was very limited but increasing very fast.
+\item Whenever a new genome is sequenced, one could ask himself:
 \begin{itemize}
-\item How does this genome align to the other genomes?
+\item How does this genome align to the other genomes we have sequenced?
 \end{itemize}
 \end{itemize}
 
-Problem: 
+\only<2>Problem: 
 \begin{itemize}
-\item We had algorithms that were used for single gene sequences (up to 10,000 bp)
-\item But, they won't work well with whole genomes (can be millions of base pairs or more).
-\item On the other algorithms they'd either
+\item<2> We had algorithms that were made for single gene sequences.
+\item<2> But, they won't work well with whole genomes.
+\item<2> It's simple: Size matters.
 \begin{itemize}
-\item Take up way too much memory or
-\item Have unacceptable computational time
+\item<2> Take up way too much memory or
+\item<2> Have unacceptable computational time
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -87,18 +87,17 @@ MUMmer:
 \item Was published in 1999.
 \item Is a system used to align whole genome sequences.
 \item Uses suffix trees as a data structure.
-\item Tries to find large unique chunks of exact matches on both genomes.
-\begin{itemize}
-\item So it will only work well for two genomes that are similar/related.
-\end{itemize}
-\item Has been open-source since 2004 (when MUMmer 3 was released).
+\item Idea: Finding large chunks of exact matches on both genomes in linear time.
+%\begin{itemize}
+%\item So it will only work well for two genomes that are similar/related.
+%\end{itemize}
 \item Doesn't guarantee the optimal solution, just a good one.
-\item The algorithm can be split into several steps.
+%\item The algorithm can be split into several steps.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Step 1: Creating a suffix tree}
-A suffix tree is a compact representation that stores all possible suffixes of an input sequence.
+A suffix tree stores all possible suffixes in a tree.
 \begin{itemize}
 \item Square nodes are leaves.
 \begin{itemize}
@@ -106,7 +105,7 @@ A suffix tree is a compact representation that stores all possible suffixes of a
 \end{itemize} 
 \item Circular nodes are internal nodes.
 \begin{itemize}
-\item That means two or more sequences share the same prefix.
+%\item That means two or more sequences share the same prefix.
 \item Store information about the length of the shared prefix.
 \end{itemize}
 \end{itemize}
@@ -125,21 +124,20 @@ A subsequence is a MUM (Maximal Unique Matches) if and only if:
 \begin{itemize}
 \item The subsequence has an exact match on both genomes
 \item It is not a subsequence of another matched sequence
-\begin{itemize}
-\item This means the sequence is surrounded be mismatches
-\end{itemize}
+%\begin{itemize}
+%\item This means the sequence is surrounded be mismatches
+%\end{itemize}
 \item It is unique
-\begin{itemize}
-\item It appears exactly once in both genomes
-\end{itemize}
-\item Almost always uses some minimum sequence length.
+%\begin{itemize}
+%\item It appears exactly once in both genomes
+%\end{itemize}
+%\item Almost always uses some minimum sequence length.
 \end{itemize}
 \end{definition}
 \begin{example}
 \texttt{tcgatcGACGATCGCGGCCGTAGATCGAATAACGAGAGAGCATAAcgactta}
 \texttt{gcattaGACGATCGCGGCCGTAGATCGAATAACGAGAGAGCATAAtccagag}
 \end{example}
-We can find these MUMs using the suffix tree (further details later).
 \end{frame}
 
 \begin{frame}{Step 3: Sorting the matches found in the MUM alignment}
@@ -152,13 +150,13 @@ Once we have found the MUMs, we enumerate them like this:
 \textbf{Problem:} We cannot align all MUMs because they aren't in the same order in both genomes.
 
 \textbf{Solution:} Align as many MUMs as we can:
-\begin{itemize}
-\item We find the longest increasing sequence for genome B.
-\begin{itemize}
-\item In this case the sequence is <1,3,2,4,6,7,5>.
-\end{itemize}
-\item We can do this in $O(K \log K)$ time, where $K$ is the number of MUMs. Since in general $K << N/\log N$ this step takes $O(n)$ time.
-\end{itemize}
+%\begin{itemize}
+%\item We find the longest increasing sequence for genome B.
+%\begin{itemize}
+%\item In this case the sequence is <1,3,2,4,6,7,5>.
+%\end{itemize}
+%\item We can do this in $O(K \log K)$ time, where $K$ is the number of MUMs. Since in general $K << N/\log N$ this step takes $O(n)$ time.
+%\end{itemize}
 
 \vspace{0.2cm}{
 	\includegraphics[width=0.75\textwidth]{img/sort2.png}
@@ -167,33 +165,49 @@ Once we have found the MUMs, we enumerate them like this:
 
 \begin{frame}{Step 4: Closing the gaps}
 Everything in between the MUMs is called \textbf{gaps}.
+\vspace{0.2cm}{
+	\includegraphics[width=0.75\textwidth]{img/sort2.png}
+}
 \begin{itemize}
-\item To find alignment for the gaps we use any alignment algorithm.
-\item The first version of MUMmer uses the Smith-Waterman alignment algorithm (which takes $O(n^2)$ time).
-\item If the gaps are too large for the alignment algorithm we need to recursively find new MUMs in that region using a smaller minimum sequence length than before.
+\item To find alignment for the gaps we can use any alignment algorithm.
+\item MUMmer uses the Smith-Waterman algorithm.
+%\item If the gaps are too large for the alignment algorithm we need to recursively find new MUMs in that region using a smaller minimum sequence length than before.
 \end{itemize}
-
 \end{frame}
 
-\begin{frame}{Step 5: Output results}
-The final alignment is the alignment of MUMs and gaps combined.
-\begin{itemize}
-\item If the two genomes are very similar, then the MUMs sequences will...:
-\begin{itemize}
-\item ...be long.
-\item ...cover most of the genome.
-\item ...rarely be a random match. Therefore few or no errors.
-\item ...make the algorithm run fast (almost linear time)
-\end{itemize}
-\item If the genomes are very different, then the MUMs sequences will...:
-\begin{itemize}
-\item ...be short.
-\item ...cover a small part of the genome.
-\item ...often be a random match. Therefore many errors.
-\item ...make the algorithm run slow.
-\end{itemize}
-\end{itemize}
+%\begin{frame}{Step 5: Output results}
+%The final alignment is the alignment of MUMs and gaps combined.
+%\begin{itemize}
+%\item If the two genomes are very similar, then the MUMs sequences will...:
+%\begin{itemize}
+%\item ...be long.
+%\item ...cover most of the genome.
+%\item ...rarely be a random match. Therefore few or no errors.
+%\item ...make the algorithm run fast (almost linear time)
+%\end{itemize}
+%\item If the genomes are very different, then the MUMs sequences will...:
+%\begin{itemize}
+%\item ...be short.
+%\item ...cover a small part of the genome.
+%\item ...often be a random match. Therefore many errors.
+%\item ...make the algorithm run slow.
+%\end{itemize}
+%\end{itemize}
+%
+%\end{frame}
 
+\begin{frame}{Diving deeper}
+How do we go from use suffix trees to find MUMs?
+
+\begin{example}
+\begin{itemize}
+\item[In] Two genomes\\
+\hspace*{0.5cm} Genome A: \texttt{ABBA}\\
+\hspace*{0.5cm} Genome B: \texttt{ABABB}
+\item[Out] List of all MUMs.
+\end{itemize}
+\end{example}
+Combined string: \texttt{ABBA\$ABABB}
 \end{frame}
 
 \begin{frame}{Creating a suffix tree}
@@ -471,10 +485,14 @@ Let's recall what condition MUMs had to have:
 \item Surrounded by mismatches.
 \item Unique.
 \end{enumerate}
-We can achieve conditions 1 and 3 by searching the tree for a internal with exactly two leafs which have to start on each side of the dollar sign (on each genome).
+We can achieve conditions 1 and 3 by searching the tree for a internal node with:
+\begin{itemize}
+\item Exactly two leafs.
+\item Both leaves start on each side of the dollar sign.
+\end{itemize}
 
 \vspace*{0.1cm}
-We'll need to check for condition 2 separately.
+We'll need to check for condition 2 afterwards.
 
 \end{frame}
 
@@ -583,7 +601,7 @@ We have the following potential MUMs:
 \item \texttt{BA} at starting positions 2 and 6.
 \item \texttt{BB} at starting positions 1 and 8.
 \end{itemize}
-Our string: \texttt{ABBA\$ABABB}
+Our string: \texttt{ABBA\$ABABB}. Let's check if condition 2 is satisfied
 \begin{itemize}
 \item \texttt{ABB} achieves condition 2 (it's surrounded by mismatches).
 \item \texttt{BA} achieves condition 2 as well.
@@ -593,28 +611,43 @@ Resulting MUMs: \texttt{\textbf{ABB}} and \texttt{\textbf{BA}}.
 \end{frame}
 
 
-\begin{frame}{Results of using MUMmer}
+\begin{frame}{Results and conclusion}
 MUMmer was put to the test on various genomes:
 \begin{itemize}
 \item<1-> Two strains of tuberculosis (bacteria) that are >99\% identical
 \begin{itemize}
 \item<1-> 5 seconds to create the suffix tree.
 \item<1-> 45 seconds to sort the MUMs.
-\item<1-> 5 seconds to generate the Smith-Waterman alignments of the gaps.
+\item<1-> 5 seconds to generate alignments of the gaps.
 \end{itemize}
 \item<2-> Two 'cousin' genomes. Genome of \textit{M.genitalium} (580,074 nucleotides) and \textit{M.pneumoniae} (816,394 nucleotides)
 \begin{itemize}
 \item<2-> 6.5 seconds to create the suffix tree.
 \item<2-> 0.02 seconds to sort the MUMs.
-\item<2-> 116 seconds to generate the Smith-Waterman alignments of the gaps.
+\item<2-> 116 seconds to generate alignments of the gaps.
 \end{itemize}
-\item<3-> Subsequence of a human chromosome 12p13 and mouse chromosome 6 (both rougly 230,000 nucleotides)
+\end{itemize}
+\only<3>{So in conclusion:}
 \begin{itemize}
-\item<3-> 1.6 seconds to create the suffix tree.
-\item<3-> $\approx$ 0 seconds to sort the MUMs.
-\item<3-> 27.4 seconds to generate the Smith-Waterman alignments of the gaps.
+\item<3-> If the two genomes are very similar, MUMs sequences will...:
+\begin{itemize}
+\item<3-> ...be long and cover most of the genome.
+\item<3-> ...rarely be a random match. Therefore few or no errors.
+\item<3-> ...make the algorithm run fast (almost linear time)
+\end{itemize}
+\item<3-> If the genomes are very different, MUMs sequences will...:
+\begin{itemize}
+\item<3-> ...be short and cover a small part of the genome.
+\item<3-> ...often be a random match. Therefore many errors.
+\item<3-> ...make the algorithm run slow.
 \end{itemize}
 \end{itemize}
+%\item<3-> Subsequence of a human chromosome 12p13 and mouse chromosome 6 (both rougly 230,000 nucleotides)
+%\begin{itemize}
+%\item<3-> 1.6 seconds to create the suffix tree.
+%\item<3-> $\approx$ 0 seconds to sort the MUMs.
+%\item<3-> 27.4 seconds to generate alignments of the gaps.
+%\end{itemize}
 
 \end{frame}
 
@@ -623,20 +656,24 @@ MUMmer was put to the test on various genomes:
 \item MUMmer 3 is the latest version of MUMmer
 \item It was released in 2004 and is open-source.
 \item Requires less than half the memory and more than twice as fast than the initial MUMmer.
-\item Most notable problems fixed and options added since the initial MUMmer:
+\item Most notable features added since the initial MUMmer:
 \begin{itemize}
 \item You can allow tolarence for mismatches when finding MUMs.
-\item Can handle MUMs that are not necessarily unique.
+\item Can handle non-unique MUMs.
 \item All sorts of visualization tools.
 \end{itemize}
-\item Could successfully compare all human chromosomes to each other. Tests were performed on a single computer with 950 MHz processor.
-\begin{itemize}
-\item Computation time: 4.5 days
-\item Memory used: 3.9 GB
-\end{itemize}
+%\item Could successfully compare all human chromosomes to each other. Tests were performed on a single computer with 950 MHz processor.
+%\begin{itemize}
+%\item Computation time: 4.5 days
+%\item Memory used: 3.9 GB
+%\end{itemize}
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Thank you!}
+Feel free to ask any questions.
+
+\end{frame}
 
 
 \end{document}
